@@ -28,6 +28,7 @@ struct LexiconDecoderOptions {
   double silScore; // Silence insertion score
   bool logAdd; // If or not use logadd when merging hypothesis
   CriterionType criterionType; // CTC or ASG
+  double blankSkipThreshold;
 };
 
 /**
@@ -130,7 +131,7 @@ class FL_TEXT_API LexiconDecoder : public Decoder {
         blank_(blank),
         unk_(unk),
         transitions_(transitions),
-        isLmToken_(isLmToken) {}
+        isLmToken_(isLmToken), (blankSkipThreshold) {}
 
   void decodeBegin() override;
 
@@ -164,6 +165,7 @@ class FL_TEXT_API LexiconDecoder : public Decoder {
   // if LM is token-level (operates on the same level as the emitting model)
   // or it is word-level (in case of false)
   bool isLmToken_;
+  double blankSkipThreshold;
 
   // All the hypothesis new candidates (can be larger than beamsize) proposed
   // based on the ones from previous frame

@@ -40,6 +40,39 @@ void LexiconDecoder::decodeStep(const float* emissions, int T, int N) {
 
   std::vector<size_t> idx(N);
   for (int t = 0; t < T; t++) {
+    blankScore = emissions[t * N + blank_];
+    if (blankSkipThreshold > 0. && blankScore > log(blankSkipThreshold)) {
+
+      candidatesReset(candidatesBestScore_, candidates_, candidatePtrs_);
+      for (const LexiconDecoderState& prevHyp : hyp_[startFrame + t]) {
+        const TrieNode* prevLex = prevHyp.lex;
+        candidatesAdd(
+          candidates_,
+          candidatesBestScore_,
+          opt_.beamThreshold,
+          prevHyp.score + blankScore,
+          prevHyp.lmState,
+          prevLex,
+          &prevHyp,
+          blank_,
+          -1,
+          true, // prevBlank
+          prevHyp.emittingModelScore + blankScore,
+          prevHyp.lmScore);
+      }
+
+      candidatesStore(
+        candidates_,
+        candidatePtrs_,
+        hyp_[startFrame + t + 1],
+        opt_.beamSize,
+        candidatesBestScore_ - opt_.beamThreshold,
+        opt_.logAdd,
+        false);
+      updateLMCache(lm_, hyp_[startFrame + t + 1]);
+      continue;
+    }
+
     std::iota(idx.begin(), idx.end(), 0);
     if (N > opt_.beamSizeToken) {
       std::partial_sort(
