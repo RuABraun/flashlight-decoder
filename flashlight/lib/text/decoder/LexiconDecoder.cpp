@@ -41,7 +41,7 @@ void LexiconDecoder::decodeStep(const float* emissions, int T, int N) {
   std::vector<size_t> idx(N);
   for (int t = 0; t < T; t++) {
     blankScore = emissions[t * N + blank_];
-    if (blankSkipThreshold > 0. && blankScore > log(blankSkipThreshold)) {
+    if (blankSkipThreshold > 0. && blankScore > log(blankSkipThreshold_)) {
 
       candidatesReset(candidatesBestScore_, candidates_, candidatePtrs_);
       for (const LexiconDecoderState& prevHyp : hyp_[startFrame + t]) {
