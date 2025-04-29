@@ -131,7 +131,7 @@ class FL_TEXT_API LexiconDecoder : public Decoder {
         blank_(blank),
         unk_(unk),
         transitions_(transitions),
-        isLmToken_(isLmToken), blankSkipThreshold_(blankSkipThreshold) {}
+        isLmToken_(isLmToken) {}
 
   void decodeBegin() override;
 
@@ -165,7 +165,6 @@ class FL_TEXT_API LexiconDecoder : public Decoder {
   // if LM is token-level (operates on the same level as the emitting model)
   // or it is word-level (in case of false)
   bool isLmToken_;
-  double blankSkipThreshold_;
 
   // All the hypothesis new candidates (can be larger than beamsize) proposed
   // based on the ones from previous frame

@@ -11,6 +11,7 @@
 #include <functional>
 #include <numeric>
 #include <unordered_map>
+#include <iostream>
 
 #include "flashlight/lib/text/decoder/LexiconDecoder.h"
 
@@ -40,8 +41,8 @@ void LexiconDecoder::decodeStep(const float* emissions, int T, int N) {
 
   std::vector<size_t> idx(N);
   for (int t = 0; t < T; t++) {
-    blankScore = emissions[t * N + blank_];
-    if (blankSkipThreshold > 0. && blankScore > log(blankSkipThreshold_)) {
+    double blankScore = emissions[t * N + blank_];
+    if (opt_.blankSkipThreshold > 0. && blankScore > std::log(opt_.blankSkipThreshold)) {
 
       candidatesReset(candidatesBestScore_, candidates_, candidatePtrs_);
       for (const LexiconDecoderState& prevHyp : hyp_[startFrame + t]) {
@@ -69,8 +70,10 @@ void LexiconDecoder::decodeStep(const float* emissions, int T, int N) {
         candidatesBestScore_ - opt_.beamThreshold,
         opt_.logAdd,
         false);
-      updateLMCache(lm_, hyp_[startFrame + t + 1]);
+      std::cerr << "yes " << t<<std::endl;
       continue;
+    } else {
+      std::cerr << "nope " <<t<<std::endl;
     }
 
     std::iota(idx.begin(), idx.end(), 0);
