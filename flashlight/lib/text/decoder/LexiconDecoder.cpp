@@ -11,7 +11,6 @@
 #include <functional>
 #include <numeric>
 #include <unordered_map>
-#include <iostream>
 
 #include "flashlight/lib/text/decoder/LexiconDecoder.h"
 
@@ -70,10 +69,7 @@ void LexiconDecoder::decodeStep(const float* emissions, int T, int N) {
         candidatesBestScore_ - opt_.beamThreshold,
         opt_.logAdd,
         false);
-      std::cerr << "yes " << t<<std::endl;
       continue;
-    } else {
-      std::cerr << "nope " <<t<<std::endl;
     }
 
     std::iota(idx.begin(), idx.end(), 0);
